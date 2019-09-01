@@ -82,12 +82,6 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 			case "method":
 				v := &MethodRule{}
 
-				//requiredRuleParams(map[string]string{
-				//	"match":   "string",
-				//	"comment": "string",
-				//	//"argument": "float64", // JSON number
-				//}, r)
-
 				if r["call"] != nil {
 					call, _ := r["call"].(string)
 					v.call = call
@@ -161,16 +155,4 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 	}
 
 	return nil
-}
-
-func requiredRuleParams(paramWithType map[string]string, givenParams map[string]interface{}) {
-	for p, t := range paramWithType {
-		if givenParams[p] == nil {
-			panic(fmt.Sprintf("required rule param not set %v", p))
-		}
-		typeStr := fmt.Sprintf("%T", givenParams[p])
-		if typeStr != t {
-			panic(fmt.Sprintf("rule param not proper type %v", p))
-		}
-	}
 }

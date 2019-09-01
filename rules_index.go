@@ -82,17 +82,21 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 			case "method":
 				v := &MethodRule{}
 
-				requiredRuleParams(map[string]string{
-					"match":   "string",
-					"comment": "string",
-					//"argument": "float64", // JSON number
-				}, r)
+				//requiredRuleParams(map[string]string{
+				//	"match":   "string",
+				//	"comment": "string",
+				//	//"argument": "float64", // JSON number
+				//}, r)
 
-				match, _ := r["match"].(string)
-				v.match = match
+				if r["match"] != nil {
+					match, _ := r["match"].(string)
+					v.match = match
+				}
 
-				comment, _ := r["comment"].(string)
-				v.comment = comment
+				if r["comment"] != nil {
+					comment, _ := r["comment"].(string)
+					v.comment = comment
+				}
 
 				if r["dont_use"] != nil {
 					dontUse, _ := r["dont_use"].(bool)

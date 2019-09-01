@@ -24,7 +24,7 @@
         },
         {
             "type": "method",
-            "comment": "use exactly 2048 for bits because examples are silly sometimes",
+            "comment": "use EXACTLY 2048 bits because examples are silly sometimes",
             "call": "rsa.GenerateKey",
             "argument": 1,
             "less_than": 2049,

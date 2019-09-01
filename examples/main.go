@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net"
 	"net/http"
+
+	_ "unsafe"
 
 	"golang.org/x/crypto/md4"
 )
@@ -29,4 +32,16 @@ func main() {
 
 	http.Handle("/", nil)
 	http.HandleFunc("/", nil)
+
+	if h5 == nil {
+		// Listen on a random tcp port on all ipv4 interfaces
+		listener, err := net.Listen("tcp", "0.0.0.0:0")
+		if err != nil {
+			panic(err)
+		}
+		err = listener.Close()
+		if err != nil {
+			panic(err)
+		}
+	}
 }

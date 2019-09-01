@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net/http"
 
 	"golang.org/x/crypto/md4"
 )
@@ -25,4 +26,7 @@ func main() {
 	h5 := md5.New()
 	io.WriteString(h5, "wiggle")
 	fmt.Printf("%x", h5.Sum(nil))
+
+	http.Handle("/", nil)
+	http.HandleFunc("/", nil)
 }

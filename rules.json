@@ -55,15 +55,10 @@
         },
         {
             "type": "method",
-            "comment": "don't use http.Handle which useses the DefaultServeMux due to possible side-effects",
-            "call": "http.Handle",
-            "dont_use": true
-        },
-        {
-            "type": "method",
-            "comment": "don't use http.HandleFunc which useses the DefaultServeMux due to possible side-effects",
-            "call": "http.HandleFunc",
-            "dont_use": true
+            "comment": "don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects",
+            "cannot_match": [
+                "http.Handle$|http.HandleFunc$"
+            ]
         }
     ]
 }

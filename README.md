@@ -39,7 +39,7 @@ examples/main.go:30:2:don't use http.Handle/http.HandleFunc which uses the Defau
 examples/main.go:31:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
 ```
 
-> **Note**: Errors are output to STDOUT in the following format `file:line:column:comment`
+> **Note**: Linting messages are output to STDOUT in the following format `file:line:column:comment`
 
 ## Rule Types
 

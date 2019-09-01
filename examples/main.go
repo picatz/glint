@@ -34,8 +34,10 @@ func main() {
 	http.Handle("/", nil)
 	http.HandleFunc("/", nil)
 
-	config := tls.Config{
-		CipherSuites: []uint16{tls.TLS_AES_128_GCM_SHA256},
+	var ex uint16
+
+	_ = tls.Config{
+		CipherSuites: []uint16{tls.TLS_AES_128_GCM_SHA256, ex},
 	}
 
 	if h5 == nil {

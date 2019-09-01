@@ -84,6 +84,15 @@
             "cannot_match": [
                 "unsafe"
             ]
+        },
+        {
+            "type": "struct",
+            "comment": "don't use old/weak tls cipher suites in your tls.Config",
+            "name": "tls.Config",
+            "field": "CipherSuites",
+            "cannot_match": [
+                "tls.TLS_AES_128_GCM_SHA256"
+            ]
         }
     ]
 }

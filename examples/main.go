@@ -23,7 +23,6 @@ func main() {
 	fmt.Printf("%x", h4.Sum(nil))
 
 	h5 := md5.New()
-	io.WriteString(h5, "The fog is getting thicker!")
-	io.WriteString(h5, "And Leon's getting laaarger!")
+	io.WriteString(h5, "wiggle")
 	fmt.Printf("%x", h5.Sum(nil))
 }

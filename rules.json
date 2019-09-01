@@ -51,6 +51,18 @@
             "comment": "don't use math.Rand as source of entropy",
             "match": "rand.New",
             "dont_use": true
+        },
+        {
+            "type": "method",
+            "comment": "don't use http.Handle which useses the DefaultServeMux due to possible side-effects",
+            "match": "http.Handle",
+            "dont_use": true
+        },
+        {
+            "type": "method",
+            "comment": "don't use http.HandleFunc which useses the DefaultServeMux due to possible side-effects",
+            "match": "http.HandleFunc",
+            "dont_use": true
         }
     ]
 }

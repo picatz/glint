@@ -13,7 +13,6 @@ import (
 type MethodRule struct {
 	comment  string
 	call     string
-	matchAny []*regexp.Regexp
 	argument int
 
 	// generic

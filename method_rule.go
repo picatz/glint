@@ -12,7 +12,7 @@ import (
 // MethodRule handles selector expressions (method calls)
 type MethodRule struct {
 	comment  string
-	match    string
+	call     string
 	matchAny []*regexp.Regexp
 	argument int
 
@@ -27,7 +27,7 @@ type MethodRule struct {
 }
 
 func (rule *MethodRule) String() string {
-	return fmt.Sprintf("method rule for %v (%v): %v", rule.match, rule.argument, rule.greaterThan)
+	return fmt.Sprintf("method rule for %v (%v): %v", rule.call, rule.argument, rule.greaterThan)
 }
 
 func (rule *MethodRule) LintMessage(fs *token.FileSet, node ast.Node) string {
@@ -42,6 +42,48 @@ func (rule *MethodRule) LintMessage(fs *token.FileSet, node ast.Node) string {
 	)
 }
 
+func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, node ast.Node, ce *ast.CallExpr) {
+	handleBasicLitExpr := func(arg ast.Expr) {
+		bl, ok := arg.(*ast.BasicLit)
+		if ok {
+			switch bl.Kind {
+			case token.STRING:
+				strValue := strings.Replace(bl.Value, "\"", "", -1)
+				for _, cm := range rule.cannotMatch {
+					match := cm.FindString(strValue)
+					if match != "" {
+						fmt.Println(rule.LintMessage(fs, bl))
+					}
+				}
+			case token.INT:
+				argInt, err := strconv.Atoi(bl.Value)
+				if err == nil {
+					if argInt <= rule.greaterThan || !(argInt >= rule.lessThan) || (argInt != rule.equals) {
+						fmt.Println(rule.LintMessage(fs, bl))
+					}
+				}
+			}
+		}
+	}
+
+	if methodCall == rule.call {
+		if rule.dontUse {
+			fmt.Println(rule.LintMessage(fs, node))
+			return
+		}
+		if rule.argument == -1 { // all arguments
+			for _, arg := range ce.Args {
+				handleBasicLitExpr(arg)
+			}
+		} else { // a specific argument
+			arg := ce.Args[rule.argument]
+			handleBasicLitExpr(arg)
+		}
+	} else if matchAny(methodCall, rule.cannotMatch) {
+		fmt.Println(rule.LintMessage(fs, node))
+	}
+}
+
 // Action is required to establish a Rule
 func (rule *MethodRule) Action(fs *token.FileSet, node ast.Node) {
 	ce, ok := node.(*ast.CallExpr)
@@ -49,40 +91,7 @@ func (rule *MethodRule) Action(fs *token.FileSet, node ast.Node) {
 		se, ok := ce.Fun.(*ast.SelectorExpr)
 		if ok {
 			methodCall := fmt.Sprintf("%v.%v", se.X, se.Sel.Name)
-
-			if methodCall == rule.match {
-				if rule.dontUse {
-					fmt.Println(rule.LintMessage(fs, node))
-					return
-				}
-				if rule.argument == -1 { // all arguments
-					// TODO: do this
-				} else { // a specific argument
-					arg := ce.Args[rule.argument]
-					bl, ok := arg.(*ast.BasicLit)
-					if ok {
-						switch bl.Kind {
-						case token.STRING:
-							strValue := strings.Replace(bl.Value, "\"", "", -1)
-							for _, cm := range rule.cannotMatch {
-								match := cm.FindString(strValue)
-								if match != "" {
-									fmt.Println(rule.LintMessage(fs, bl))
-								}
-							}
-						case token.INT:
-							argInt, err := strconv.Atoi(bl.Value)
-							if err == nil {
-								if argInt <= rule.greaterThan || !(argInt >= rule.lessThan) || (argInt != rule.equals) {
-									fmt.Println(rule.LintMessage(fs, bl))
-								}
-							}
-						}
-					}
-				}
-			} else if matchAny(methodCall, rule.matchAny) {
-				// TODO deal with match any cases
-			}
+			rule.ProcessMethodCall(methodCall, fs, node, ce)
 		}
 	}
 }

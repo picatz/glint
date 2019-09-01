@@ -88,9 +88,9 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 				//	//"argument": "float64", // JSON number
 				//}, r)
 
-				if r["match"] != nil {
-					match, _ := r["match"].(string)
-					v.match = match
+				if r["call"] != nil {
+					call, _ := r["call"].(string)
+					v.call = call
 				}
 
 				if r["comment"] != nil {

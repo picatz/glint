@@ -24,7 +24,7 @@ Rules file:
     ]
 }
 ```
-IVEgottaFeelingOoooOoooThatTwitterIsCrazy1234567890
+
 ```console
 $ glint examples/main.go
 examples/main.go:4:2:we don't rely on these packages for almost anything

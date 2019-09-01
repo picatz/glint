@@ -4,7 +4,7 @@
 
 Extensible golang linting tool.
 
-## Why?
+## Why
 
 After playing around a little bit with `go/ast` (and related packages), I realized there was an oppurtunity to create a more easily accessible golang linter using JSON-defined rules.
 

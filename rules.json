@@ -1,0 +1,56 @@
+{
+    "rules": [
+        {
+            "type": "import",
+            "comment": "we don't use golang.org/x/* packages",
+            "cannot_match": [
+                "golang.org/x/\\w+"
+            ],
+            "must_match": [
+                "\\w+"
+            ]
+        },
+        {
+            "type": "import",
+            "comment": "we don't rely on these packages for almost anything",
+            "cannot_match": [
+                "crypto/md5",
+                "crypto/des",
+                "crypto/rc4",
+                "math/rand",
+                "net/http/cgi",
+                "crypto/sha1"
+            ]
+        },
+        {
+            "type": "method",
+            "comment": "use exactly 2048 for bits because examples are silly sometimes",
+            "match": "rsa.GenerateKey",
+            "argument": 1,
+            "less_than": 2049,
+            "greater_than": 0,
+            "equals": 2048
+        },
+        {
+            "type": "method",
+            "comment": "we don't use fmt.Errorf for some silly reaosn",
+            "match": "fmt.Errorf",
+            "dont_use": true
+        },
+        {
+            "type": "method",
+            "comment": "don't use uppercase error message string in fmt.Errorf formatted errors",
+            "match": "fmt.Errorf",
+            "argument": 0,
+            "cannot_match": [
+                "^[A-Z]+"
+            ]
+        },
+        {
+            "type": "method",
+            "comment": "don't use math.Rand as source of entropy",
+            "match": "rand.New",
+            "dont_use": true
+        }
+    ]
+}

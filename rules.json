@@ -59,6 +59,31 @@
             "cannot_match": [
                 "http.Handle$|http.HandleFunc$"
             ]
+        },
+        {
+            "type": "method",
+            "comment": "don't use net.Listen to listen on all IPv4 addresses",
+            "call": "net.Listen",
+            "argument": 1,
+            "cannot_match": [
+                "^(0.0.0.0|:).*$"
+            ]
+        },
+        {
+            "type": "method",
+            "comment": "don't use net.Listen to listen on a random port",
+            "call": "net.Listen",
+            "argument": 1,
+            "cannot_match": [
+                "^.*:0?$"
+            ]
+        },
+        {
+            "type": "import",
+            "comment": "don't use the unsafe package",
+            "cannot_match": [
+                "unsafe"
+            ]
         }
     ]
 }

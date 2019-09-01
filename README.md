@@ -30,15 +30,19 @@ Rules file:
 ```console
 $ glint examples/main.go
 examples/main.go:4:2:we don't rely on these packages for almost anything
-examples/main.go:8:2:we don't rely on these packages for almost anything
-examples/main.go:11:2:we don't use golang.org/x/* packages
-examples/main.go:15:58:use EXACTLY 2048 bits when generating RSA keys for some reason
-examples/main.go:15:29:don't use math.Rand as source of entropy
-examples/main.go:17:17:we don't use fmt.Errorf for some silly reaosn
-examples/main.go:18:24:we don't use fmt.Errorf for some silly reaosn
-examples/main.go:18:35:don't use uppercase error message string in fmt.Errorf formatted errors
-examples/main.go:30:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
-examples/main.go:31:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
+examples/main.go:9:2:we don't rely on these packages for almost anything
+examples/main.go:13:2:don't use the unsafe package
+examples/main.go:15:2:we don't use golang.org/x/* packages
+examples/main.go:19:58:use EXACTLY 2048 bits when generating RSA keys for some reason
+examples/main.go:19:29:don't use math.Rand as source of entropy
+examples/main.go:21:17:we don't use fmt.Errorf for some silly reaosn
+examples/main.go:22:24:we don't use fmt.Errorf for some silly reaosn
+examples/main.go:22:35:don't use uppercase error message string in fmt.Errorf formatted errors
+examples/main.go:34:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
+examples/main.go:35:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
+examples/main.go:40:26:don't use old/weak tls cipher suites in your tls.Config
+examples/main.go:45:38:don't use net.Listen to listen on all IPv4 addresses
+examples/main.go:45:38:don't use net.Listen to listen on a random ports
 ```
 
 > **Note**: Linting messages are output to STDOUT in the following format `file:line:column:comment`
@@ -142,6 +146,31 @@ Using the `"method"` type you can define certain method calls that should not be
     "cannot_match": [
        "http.Handle$",
        "http.HandleFunc$"
+    ]
+}
+```
+
+### Struct
+
+Using the `"struct"` type you can declare rules for structs.
+
+#### Available Options for Struct
+
+| Option         | Description                                             | Required  |
+| ---------------|:--------------------------------------------------------|----------:|
+| `name`         | the name of the package struct to inspect               | false     |
+| `field`        | the specific struct field to inspect                    | false     |
+
+```json
+{
+    "type": "struct",
+    "comment": "don't use tls 1.3 ciphers in a tls.Config",
+    "name": "tls.Config",
+    "field": "CipherSuites",
+    "cannot_match": [
+        "tls.TLS_AES_128_GCM_SHA256",
+        "tls.TLS_AES_256_GCM_SHA384",
+        "TLS_CHACHA20_POLY1305_SHA256"
     ]
 }
 ```

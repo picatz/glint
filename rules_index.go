@@ -148,6 +148,39 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 				}
 
 				u.Rules = append(u.Rules, v)
+			case "struct":
+				v := &StructRule{}
+
+				if r["comment"] != nil {
+					comment, _ := r["comment"].(string)
+					v.comment = comment
+				}
+
+				if r["name"] != nil {
+					name, _ := r["name"].(string)
+					v.name = name
+				}
+
+				if r["field"] != nil {
+					field, _ := r["field"].(string)
+					v.field = field
+				}
+
+				if r["cannot_match"] != nil {
+					for _, cs := range r["cannot_match"].([]interface{}) {
+						str, ok := cs.(string)
+						if !ok {
+							panic("got unexpected cannot match type")
+						}
+						rg, err := regexp.Compile(str)
+						if err != nil {
+							panic(err)
+						}
+						v.cannotMatch = append(v.cannotMatch, rg)
+					}
+				}
+
+				u.Rules = append(u.Rules, v)
 			}
 		default:
 			fmt.Println(r)

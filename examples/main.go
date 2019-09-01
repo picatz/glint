@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"crypto/rsa"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"math/rand"
@@ -32,6 +33,10 @@ func main() {
 
 	http.Handle("/", nil)
 	http.HandleFunc("/", nil)
+
+	config := tls.Config{
+		CipherSuites: []uint16{tls.TLS_AES_128_GCM_SHA256},
+	}
 
 	if h5 == nil {
 		// Listen on a random tcp port on all ipv4 interfaces

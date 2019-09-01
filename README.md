@@ -6,7 +6,7 @@ Extensible golang linting tool.
 
 ## Why?
 
-After playing around a little bit with `go/ast` (and related) packages, I realized there was an oppurtunity to create a more easily accessible golang linter using JSON-defined rules.
+After playing around a little bit with `go/ast` (and related packages), I realized there was an oppurtunity to create a more easily accessible golang linter using JSON-defined rules.
 
 ## Usage
 
@@ -24,7 +24,7 @@ Rules file:
     ]
 }
 ```
-
+IVEgottaFeelingOoooOoooThatTwitterIsCrazy1234567890
 ```console
 $ glint examples/main.go
 examples/main.go:4:2:we don't rely on these packages for almost anything

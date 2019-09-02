@@ -93,6 +93,23 @@
             "cannot_match": [
                 "tls.TLS_AES_128_GCM_SHA256"
             ]
+        },
+        {
+            "type": "struct",
+            "comment": "for most structs, ReadTimeout should almost never be 0",
+            "field": "ReadTimeout",
+            "cannot_match": [
+                "0"
+            ]
+        },
+        {
+            "type": "struct",
+            "comment": "always set ReadTimeout when creating an http.Server",
+            "name": "http.Server",
+            "field": "ReadTimeout",
+            "cannot_match": [
+                "nil"
+            ]
         }
     ]
 }

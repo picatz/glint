@@ -68,19 +68,16 @@ func main() {
 	}
 
 	lprog, err := conf.Load()
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-
-	for _, programInfo := range lprog.InitialPackages() {
-		for _, file := range programInfo.Files {
-			ast.Inspect(file, func(n ast.Node) bool {
-				for _, rule := range rulesIndex.Rules {
-					rule.Action(fs, n)
-				}
-				return true
-			})
+	if err == nil {
+		for _, programInfo := range lprog.InitialPackages() {
+			for _, file := range programInfo.Files {
+				ast.Inspect(file, func(n ast.Node) bool {
+					for _, rule := range rulesIndex.Rules {
+						rule.Action(fs, n)
+					}
+					return true
+				})
+			}
 		}
 	}
 }

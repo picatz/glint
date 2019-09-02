@@ -104,11 +104,11 @@
         },
         {
             "type": "struct",
-            "comment": "always set ReadTimeout when creating an http.Server",
+            "comment": "always set ReadTimeout to something not 0 when creating an http.Server ",
             "name": "http.Server",
             "field": "ReadTimeout",
             "cannot_match": [
-                "nil"
+                "nil", "0"
             ]
         }
     ]

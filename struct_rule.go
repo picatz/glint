@@ -34,17 +34,25 @@ func (rule *StructRule) LintMessage(fs *token.FileSet, node ast.Node) string {
 
 // Action is required to establish a Rule
 func (rule *StructRule) Action(fs *token.FileSet, node ast.Node) {
-	assignment, ok := node.(*ast.AssignStmt)
+	e, ok := node.(*ast.CompositeLit)
 
 	if ok {
-		// TODO: inspect Lhs ( such as finding _ assignments which are ignored)
 		var isRightType = func(e ast.Expr) bool {
-			se, ok := e.(*ast.SelectorExpr)
-			if ok {
-				strct := fmt.Sprintf("%v.%v", se.X, se.Sel.Name)
-				return strct == rule.name
+			if rule.name == "" {
+				// allow any type of struct field to be checked
+				// if no struct name (go type) is specified
+				return true
 			}
-			return false
+			switch t := e.(type) {
+			case *ast.SelectorExpr:
+				strct := fmt.Sprintf("%v.%v", t.X, t.Sel.Name)
+				return strct == rule.name
+			case *ast.Ident:
+				return t.Name == rule.name
+			default:
+				// TODO: handle more possibilites?
+				return false
+			}
 		}
 
 		// handle stringified struct value assingment, the final check in the
@@ -55,36 +63,44 @@ func (rule *StructRule) Action(fs *token.FileSet, node ast.Node) {
 			}
 		}
 
-		// loop over potential multile var assignments
-		// and become one with the AST
-		for _, expr := range assignment.Rhs {
-			switch e := expr.(type) {
-			case *ast.CompositeLit:
-				if isRightType(e.Type) {
-					for _, el := range e.Elts {
-						kve, ok := el.(*ast.KeyValueExpr)
-						if ok {
-							kstr := fmt.Sprintf("%v", kve.Key)
-							if kstr == rule.field {
-								switch v := kve.Value.(type) {
-								case *ast.CompositeLit:
-									for _, fel := range v.Elts {
-										switch finalT := fel.(type) {
-										case *ast.SelectorExpr:
-											selector := fmt.Sprintf("%v.%v", finalT.X, finalT.Sel.Name)
-											handleStrValue(selector, fel)
-										default:
-											// TODO: handle more types
-										}
-									}
-
+		if isRightType(e.Type) {
+			if len(e.Elts) == 0 { // no struct fileds given
+				handleStrValue("nil", e)
+			}
+			for _, el := range e.Elts {
+				kve, ok := el.(*ast.KeyValueExpr)
+				if ok {
+					kstr := fmt.Sprintf("%v", kve.Key)
+					if kstr == rule.field { // TODO: allow check for any field?
+						switch v := kve.Value.(type) {
+						case *ast.CompositeLit:
+							for _, fel := range v.Elts {
+								switch finalT := fel.(type) {
+								case *ast.SelectorExpr:
+									selector := fmt.Sprintf("%v.%v", finalT.X, finalT.Sel.Name)
+									handleStrValue(selector, fel)
+								case *ast.Ident:
+									strData := fmt.Sprintf("%v", finalT.Obj.Data)
+									handleStrValue(strData, fel)
+								default:
+									// TODO: handle more types?
 								}
 							}
+						case *ast.Ident:
+							strData := fmt.Sprintf("%v", v.Obj)
+							handleStrValue(strData, kve)
+						case *ast.SelectorExpr:
+							selector := fmt.Sprintf("%v.%v", v.X, v.Sel.Name)
+							handleStrValue(selector, v)
+						case *ast.BasicLit:
+							strData := fmt.Sprintf("%v", v.Value)
+							handleStrValue(strData, kve)
+						default:
+							// TODO: handle more types?
 						}
 					}
 				}
 			}
 		}
-
 	}
 }

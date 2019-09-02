@@ -1,6 +1,6 @@
 # glint
 
-> ⚠️ Under development!
+> ⚠️ Under development, contributions are welcome!
 
 ## Install
 

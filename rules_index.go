@@ -147,6 +147,20 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 					}
 				}
 
+				if r["call_match"] != nil {
+					for _, cs := range r["call_match"].([]interface{}) {
+						str, ok := cs.(string)
+						if !ok {
+							panic("got unexpected cannot match type")
+						}
+						rg, err := regexp.Compile(str)
+						if err != nil {
+							panic(err)
+						}
+						v.callMatch = append(v.callMatch, rg)
+					}
+				}
+
 				u.Rules = append(u.Rules, v)
 			case "struct":
 				v := &StructRule{}

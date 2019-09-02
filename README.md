@@ -10,9 +10,16 @@ $ go get -u github.com/picatz/glint
 
 ## Usage
 
-Rules file:
+Linting rules are defined with a JSON config called a `Glintfile` (this can be specified at the command-line):
+
+> **Note**: While most JSON parsers don't allow comments (including go), `Glintfile`s support non-inline comments useful for light documentation and color highlighting hints in different ediors.
 
 ```json
+# -*- mode: json -*-
+# vi: set ft=json :
+
+// This comment type is also supported.
+
 {
     "rules": [
         {
@@ -27,20 +34,27 @@ Rules file:
 
 ```console
 $ glint examples/main.go
-examples/main.go:4:2:we don't rely on these packages for almost anything
-examples/main.go:9:2:we don't rely on these packages for almost anything
-examples/main.go:13:2:don't use the unsafe package
-examples/main.go:15:2:we don't use golang.org/x/* packages
-examples/main.go:19:58:use EXACTLY 2048 bits when generating RSA keys for some reason
-examples/main.go:19:29:don't use math.Rand as source of entropy
-examples/main.go:21:17:we don't use fmt.Errorf for some silly reaosn
-examples/main.go:22:24:we don't use fmt.Errorf for some silly reaosn
-examples/main.go:22:35:don't use uppercase error message string in fmt.Errorf formatted errors
-examples/main.go:34:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
-examples/main.go:35:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
-examples/main.go:40:26:don't use old/weak tls cipher suites in your tls.Config
-examples/main.go:45:38:don't use net.Listen to listen on all IPv4 addresses
-examples/main.go:45:38:don't use net.Listen to listen on a random ports
+examples/main.go:5:2:we don't rely on these packages for almost anything
+examples/main.go:10:2:we don't rely on these packages for almost anything
+examples/main.go:17:2:we don't use golang.org/x/* packages
+examples/main.go:26:32:overly extensive file permissions detected
+examples/main.go:67:3:for most structs, ReadTimeout should almost never be 0
+examples/main.go:71:3:for most structs, ReadTimeout should almost never be 0
+examples/main.go:71:3:always set ReadTimeout to something not 0 when creating an http.Server
+examples/main.go:80:58:use 2048 bits or more when generating RSA keys for some reason
+examples/main.go:80:29:don't use math.Rand as source of entropy
+examples/main.go:82:17:we don't use fmt.Errorf for some silly reaosn
+examples/main.go:83:24:we don't use fmt.Errorf for some silly reaosn
+examples/main.go:83:35:don't use uppercase error message string in fmt.Errorf formatted errors
+examples/main.go:95:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
+examples/main.go:96:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
+examples/main.go:101:26:don't use old/weak tls cipher suites in your tls.Config
+examples/main.go:106:38:don't use net.Listen to listen on all IPv4 addresses
+examples/main.go:106:38:don't use net.Listen to listen on a random port
+```
+
+```console
+
 ```
 
 > **Note**: Linting messages are output to STDOUT in the following format `file:line:column:comment`

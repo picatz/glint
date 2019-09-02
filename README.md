@@ -93,7 +93,7 @@ Using the `"method"` type you can define certain method calls that should not be
 | `greater_than`   | the method argument, if it's an integer, must be greater than the given value  | false     |
 | `equals`         | the method argument, if it's an interger, must equal exactly the given value   | false     |
 | `dont_use`       | the method call should not be used if the given faluse is true                 | false     |
-| `cannot_match`   | array of regular expressions that method arguments *should not** match         | false     |
+| `cannot_match`   | array of regular expressions that method arguments *should not** use           | false     |
 
 ```json
 {
@@ -187,10 +187,11 @@ Using the `"struct"` type you can declare rules for structs.
 
 #### Available Options for Struct
 
-| Option         | Description                                             | Required  |
-| ---------------|:--------------------------------------------------------|----------:|
-| `name`         | the name of the package struct to inspect               | false     |
-| `field`        | the specific struct field to inspect                    | false     |
+| Option         | Description                                 | Required  |
+| ---------------|:--------------------------------------------|----------:|
+| `name`         | the name of the package struct to inspect   | false     |
+| `field`        | the specific struct field to inspect        | false     |
+| `cannot_match` | field values that **should not** be used    | false     |
 
 > **Note**: For the `field` option, if there are no fields defined when creating the struct in the inspected source code, then the assumed value to check against is `nil` for any type. This isn't the "zero value" you might expect, but greatly simplifies the config for checking structs.
 

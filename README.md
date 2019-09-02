@@ -2,8 +2,6 @@
 
 > ⚠️ Under development!
 
-Extensible golang linting tool.
-
 ## Install
 
 ```console

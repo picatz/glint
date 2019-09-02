@@ -32,7 +32,9 @@ func NewRulesIndex(filePath string) (*RulesIndex, error) {
 	scanner := bufio.NewScanner(f)
 
 	for scanner.Scan() {
-		if strings.HasPrefix(scanner.Text(), "#") || strings.HasPrefix(scanner.Text(), "//") {
+		line := scanner.Text()
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "#") || strings.HasPrefix(line, "//") {
 			continue // skip
 		}
 		configBuffer.WriteString(scanner.Text())

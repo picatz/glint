@@ -32,6 +32,8 @@ Linting rules are defined with a JSON config called a `Glintfile` (this can be s
 }
 ```
 
+> **Note**: You get to define your own rules, and perhaps a collection of rules will be made in the future by myself or others. For now, I've created an example in this reposiory in the `Glintfile` of this source code. **Don't be confused that these are the only checks `glint` can perform.** This is just an example of the output.
+
 ```console
 $ glint examples/main.go
 examples/main.go:5:2:we don't rely on these packages for almost anything
@@ -53,8 +55,12 @@ examples/main.go:106:38:don't use net.Listen to listen on all IPv4 addresses
 examples/main.go:106:38:don't use net.Listen to listen on a random port
 ```
 
-```console
+If the arguments passed to `glint` are files, then it will parse those. Otherwise, you can pass the string(s) of the package(s) you want to inspect.
 
+```console
+$ glint github.com/picatz/doh github.com/picatz/iface github.com/picatz/backdoor
+/path/to/src/github.com/picatz/doh/main.go:13:2:we don't use golang.org/x/* packages
+/path/to/src/github.com/picatz/backdoor/backdoor.go:11:2:don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects
 ```
 
 > **Note**: Linting messages are output to STDOUT in the following format `file:line:column:comment`

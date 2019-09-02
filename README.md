@@ -140,9 +140,10 @@ Using the `"method"` type you can define certain method calls that should not be
 {
     "type": "method",
     "comment": "don't use math.Rand as source of entropy",
-    "cannot_match": [
+    "call_match": [
         "rand.New$"
-    ]
+    ],
+    "dont_use": true
 }
 ```
 

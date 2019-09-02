@@ -16,6 +16,21 @@ import (
 )
 
 func main() {
+	var example = Example{
+		ReadTimeout: 0,
+	}
+
+	// and this
+	var example2 = ExampleServer{}
+
+	var httpServer = http.Server{}
+
+	var wiggle = Ignored{
+		Wiggle: true,
+	}
+
+	var wiggle2 = Ignored{}
+
 	pk, err := rsa.GenerateKey(rand.New(rand.NewSource(0)), 2047)
 	if err != nil {
 		wrapperErr := fmt.Errorf("wrapped: %v", err.Error())

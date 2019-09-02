@@ -87,12 +87,13 @@ Using the `"method"` type you can define certain method calls that should not be
 | Option           | Description                                                                    | Required  |
 | ---------------- |:-------------------------------------------------------------------------------|----------:|
 | `call`           | the package.Method call to inspect                                             | false     |
+| `call_match`     | array of regular expressions to match against a package.Method call to inspect | false     |
 | `argument`       | the index of the method argument (starting at `0` for the first) to inspect    | false     |
 | `less_than`      | the method argument, if it's an `int`, must be less than the given value       | false     |
 | `greater_than`   | the method argument, if it's an `int`, must be greater than the given value    | false     |
 | `equals`         | the method argument, if it's an `int`, must equal exactly the given value      | false     |
 | `dont_use`       | the method call should not be used if the given faluse is true                 | false     |
-| `cannot_match`   | array of regular expressions for method calls or arguments *should not** match | false     |
+| `cannot_match`   | array of regular expressions that method arguments *should not** match         | false     |
 
 ```json
 {
@@ -145,6 +146,29 @@ Using the `"method"` type you can define certain method calls that should not be
        "http.Handle$",
        "http.HandleFunc$"
     ]
+}
+```
+
+```json
+{
+    "type": "method",
+    "comment": "potential for file inclusion in file name variable, be sure to clean the path if user input",
+    "call_match": [
+        "os.Open", "ioutil.ReadFile", "filepath.Join", "path.Join"
+    ],
+    "dont_use": true
+}
+```
+
+```json
+{
+    "type": "method",
+    "comment": "overly extensive file permissions detected",
+    "call_match": [
+        "os.Mkdir", "os.MkdirAll"
+    ],
+    "argument": 1,
+    "less_than": 0777
 }
 ```
 

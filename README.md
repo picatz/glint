@@ -107,6 +107,16 @@ Using the `"method"` type you can define certain method calls that should not be
 
 ```json
 {
+   "type": "method",
+   "comment": "use 2048 bits or more when generating RSA keys for some reason",
+   "call": "rsa.GenerateKey",
+   "argument": 1,
+   "less_than": 2048
+}
+```
+
+```json
+{
     "type": "method",
     "comment": "we don't use fmt.Errorf for some reaosn",
     "call": "fmt.Errorf",
@@ -166,7 +176,7 @@ Using the `"method"` type you can define certain method calls that should not be
         "os.Mkdir", "os.MkdirAll"
     ],
     "argument": 1,
-    "less_than": 777
+    "greater_than": 750
 }
 ```
 

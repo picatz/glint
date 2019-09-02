@@ -1,7 +1,11 @@
 # -*- mode: json -*-
 # vi: set ft=json :
+
+// This comment style type is also supported.
+
 {
     "rules": [
+        # // Example comment.
         {
             "type": "import",
             "comment": "we don't use golang.org/x/* packages",
@@ -12,6 +16,7 @@
                 "\\w+"
             ]
         },
+        # Example comment again.
         {
             "type": "import",
             "comment": "we don't rely on these packages for almost anything",

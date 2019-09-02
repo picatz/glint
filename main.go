@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"go/ast"
@@ -18,8 +19,11 @@ var (
 )
 
 func init() {
-	flag.StringVar(&rulesFile, "rules", "Glintfile", "the JSON configuation files for glint")
+	flag.ErrHelp = errors.New("usage:\n\tglint [options] [files or packages]\n\n  -rules string\n\tthe JSON configuation files for glint (default \"Glintfile\")\n")
+
+	flag.StringVar(&rulesFile, "rules", "Glintfile", "the JSON configuation file for glint")
 	flag.Parse()
+
 	targetCode = flag.Args()
 }
 
@@ -35,11 +39,12 @@ func main() {
 	rulesIndex, err := NewRulesIndex(rulesFile)
 
 	if err != nil {
-		panic(err)
+		fmt.Println("error parsing rules file", rulesFile, ":", err)
+		os.Exit(1)
 	}
 
-	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "usage:\n\t%s [files]\n", os.Args[0])
+	if len(targetCode) == 0 {
+		fmt.Println("no file names or packages given!\n\n", flag.ErrHelp)
 		os.Exit(1)
 	}
 

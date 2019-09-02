@@ -11,9 +11,10 @@ import (
 
 // MethodRule handles selector expressions (method calls)
 type MethodRule struct {
-	comment  string
-	call     string
-	argument int
+	comment   string
+	call      string
+	callMatch []*regexp.Regexp
+	argument  int
 
 	// generic
 	dontUse     bool
@@ -65,7 +66,7 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 		}
 	}
 
-	if methodCall == rule.call {
+	if methodCall == rule.call || matchAny(methodCall, rule.callMatch) {
 		if rule.dontUse {
 			fmt.Println(rule.LintMessage(fs, node))
 			return
@@ -78,7 +79,7 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 			arg := ce.Args[rule.argument]
 			handleBasicLitExpr(arg)
 		}
-	} else if matchAny(methodCall, rule.cannotMatch) {
+	} else if matchAny(methodCall, rule.cannotMatch) { // TODO: consider removal because call_match
 		fmt.Println(rule.LintMessage(fs, node))
 	}
 }

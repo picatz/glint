@@ -89,9 +89,9 @@ Using the `"method"` type you can define certain method calls that should not be
 | `call`           | the package.Method call to inspect                                             | false     |
 | `call_match`     | array of regular expressions to match against a package.Method call to inspect | false     |
 | `argument`       | the index of the method argument (starting at `0` for the first) to inspect    | false     |
-| `less_than`      | the method argument, if it's an `int`, must be less than the given value       | false     |
-| `greater_than`   | the method argument, if it's an `int`, must be greater than the given value    | false     |
-| `equals`         | the method argument, if it's an `int`, must equal exactly the given value      | false     |
+| `less_than`      | the method argument, if it's an integer, must be less than the given value     | false     |
+| `greater_than`   | the method argument, if it's an integer, must be greater than the given value  | false     |
+| `equals`         | the method argument, if it's an interger, must equal exactly the given value   | false     |
 | `dont_use`       | the method call should not be used if the given faluse is true                 | false     |
 | `cannot_match`   | array of regular expressions that method arguments *should not** match         | false     |
 
@@ -101,9 +101,7 @@ Using the `"method"` type you can define certain method calls that should not be
    "comment": "use EXACTLY 2048 bits when generating RSA keys for some reason",
    "call": "rsa.GenerateKey",
    "argument": 1,
-   "less_than": 2049,
-   "greater_than": 0,
-   "equals": 2048
+    "equals": 2048
 }
 ```
 
@@ -168,7 +166,7 @@ Using the `"method"` type you can define certain method calls that should not be
         "os.Mkdir", "os.MkdirAll"
     ],
     "argument": 1,
-    "less_than": 0777
+    "less_than": 777
 }
 ```
 

@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 // RulesIndex is a collection of Rule objects
@@ -21,9 +24,28 @@ func NewRulesIndex(filePath string) (*RulesIndex, error) {
 		return nil, err
 	}
 
+	defer f.Close()
+
+	configBuffer := &bytes.Buffer{}
+
+	// strip out line-level (not inline) comments from the json config
+	scanner := bufio.NewScanner(f)
+
+	for scanner.Scan() {
+		if strings.HasPrefix(scanner.Text(), "#") || strings.HasPrefix(scanner.Text(), "//") {
+			continue // skip
+		}
+		configBuffer.WriteString(scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "reading rules file:", err)
+		os.Exit(1)
+	}
+
 	rulesIndex := &RulesIndex{}
 
-	err = json.NewDecoder(f).Decode(&rulesIndex)
+	err = json.NewDecoder(configBuffer).Decode(&rulesIndex)
 
 	if err != nil {
 		return nil, err

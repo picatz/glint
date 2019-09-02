@@ -68,6 +68,7 @@ func main() {
 	}
 
 	lprog, err := conf.Load()
+
 	if err == nil {
 		for _, programInfo := range lprog.InitialPackages() {
 			for _, file := range programInfo.Files {

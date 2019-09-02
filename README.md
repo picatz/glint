@@ -65,10 +65,10 @@ Using the `"import"` type you can specify what imported packages should or shoul
 
 #### Available Options for Import
 
-| Option        | Description                                             | Required  |
-| ------------- |:--------------------------------------------------------|----------:|
+| Option        | Description                                                              | Required  |
+| ------------- |:-------------------------------------------------------------------------|----------:|
 | `cannot_match`| array of regular expressions for packages the program **should not** use | false     |
-| `must_match`  | array of regular expressions the packages program **should** use     | false     |
+| `must_match`  | array of regular expressions the packages program **should** use         | false     |
 
 ```json
 {
@@ -161,16 +161,102 @@ Using the `"struct"` type you can declare rules for structs.
 | `name`         | the name of the package struct to inspect               | false     |
 | `field`        | the specific struct field to inspect                    | false     |
 
+> **Note**: For the `field` option, if there are no fields defined when creating the struct in the inspected source code, then the assumed value to check against is `nil` for any type. This isn't the "zero value" you might expect, but greatly simplifies the config for checking structs.
+
 ```json
 {
     "type": "struct",
-    "comment": "don't use tls 1.3 ciphers in a tls.Config",
+    "comment": "don't use TLS 1.3 ciphers in a tls.Config",
     "name": "tls.Config",
     "field": "CipherSuites",
     "cannot_match": [
         "tls.TLS_AES_128_GCM_SHA256",
         "tls.TLS_AES_256_GCM_SHA384",
-        "TLS_CHACHA20_POLY1305_SHA256"
+        "tls.TLS_CHACHA20_POLY1305_SHA256"
     ]
 }
+```
+
+```json
+{
+    "type": "struct",
+    "comment": "always set ReadTimeout when creating an http.Server",
+    "name": "http.Server",
+    "field": "ReadTimeout",
+    "cannot_match": [
+        "0", "nil"
+    ]
+}
+```
+
+```json
+{
+    "type": "struct",
+    "comment": "http.Server ReadTimeout field should never be a single second",
+    "name": "http.Server",
+    "field": "ReadTimeout",
+    "cannot_match": [
+        "time.Second"
+    ]
+}
+```
+
+```json
+{
+    "type": "struct",
+    "comment": "always set ReadTimeout when creating an ExampleServer",
+    "name": "ExampleServer",
+    "field": "ReadTimeout",
+    "cannot_match": [
+        "0", "nil"
+    ]
+}
+```
+
+> **Note**: The `ExampleServer` struct example is meant to show how to inspect non-imported packaged structs.
+
+```go
+type ExampleServer struct {
+    ReadTimeout time.Duration
+    // ...
+}
+
+// will catch this
+var example = ExampleServer{
+    ReadTimeout: 0,
+}
+
+// and this
+var example2 = ExampleServer{}
+```
+
+```json
+{
+    "type": "struct",
+    "comment": "for most structs, ReadTimeout should almost never be 0",
+    "field": "ReadTimeout",
+    "cannot_match": [
+        "0"
+    ]
+}
+```
+
+> **Note**: The example above is meant to demonstrate that struct fields of any go struct type can be checked if the `name` option is ommitted. However, if the struct is created using the implicit zero value (field is not used during initialization), then this check will not apply to it unless it cannot match `nil` as well which could accidently be applied to any struct that has ignored fields and should generally be avoided.
+
+```go
+// it would be able to check this
+ex1 := http.Server{
+    ReadTimeout: 0,
+}
+
+// and this
+ex2 := ExampleServer{
+    ReadTimeout: 0,
+}
+
+// but not this
+ex2 := ExampleServer{}
+
+// or this this
+ex2 := http.Server{}
 ```

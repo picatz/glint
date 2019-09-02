@@ -24,15 +24,6 @@
         },
         {
             "type": "method",
-            "comment": "use EXACTLY 2048 bits when generating RSA keys for some reason",
-            "call": "rsa.GenerateKey",
-            "argument": 1,
-            "less_than": 2049,
-            "greater_than": 0,
-            "equals": 2048
-        },
-        {
-            "type": "method",
             "comment": "we don't use fmt.Errorf for some silly reaosn",
             "call": "fmt.Errorf",
             "dont_use": true
@@ -110,6 +101,22 @@
             "cannot_match": [
                 "nil", "0"
             ]
-        }
+        },
+        {
+            "type": "method",
+            "comment": "overly extensive file permissions detected",
+            "call_match": [
+                "os.Mkdir", "os.MkdirAll"
+            ],
+            "argument": 1,
+            "greater_than": 750
+        },
+        {
+            "type": "method",
+            "comment": "use 2048 bits or more when generating RSA keys for some reason",
+            "call": "rsa.GenerateKey",
+            "argument": 1,
+            "less_than": 2048
+         }
     ]
 }

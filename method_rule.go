@@ -58,7 +58,7 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 			case token.INT:
 				argInt, err := strconv.Atoi(bl.Value)
 				if err == nil {
-					if argInt <= rule.greaterThan || (argInt <= rule.lessThan) || (argInt != rule.equals) {
+					if argInt > rule.greaterThan || (argInt < rule.lessThan) || (argInt == rule.equals) {
 						fmt.Println(rule.LintMessage(fs, bl))
 					}
 				}

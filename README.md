@@ -12,7 +12,7 @@ $ go get -u github.com/picatz/glint
 
 Linting rules are defined with a JSON config called a `Glintfile` (this can be specified at the command-line):
 
-> **Note**: While most JSON parsers don't allow comments (including go), `Glintfile`s support non-inline comments useful for light documentation and color highlighting hints in different editors.
+> **Note**: While most JSON parsers don't allow comments (including go), `Glintfile`s support non-inline comments useful for light documentation and syntax highlighting hints in different editors.
 
 ```json
 # -*- mode: json -*-

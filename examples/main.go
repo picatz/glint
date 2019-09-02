@@ -9,21 +9,29 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"time"
 
 	_ "unsafe"
 
 	"golang.org/x/crypto/md4"
 )
 
+type Example struct {
+	ReadTimeout time.Duration
+}
+
+type Example2 struct {
+	Wiggle bool
+}
+
 func main() {
 	var example = Example{
 		ReadTimeout: 0,
 	}
 
-	// and this
-	var example2 = ExampleServer{}
-
-	var httpServer = http.Server{}
+	var httpServer = http.Server{
+		ReadTimeout: 0,
+	}
 
 	var wiggle = Ignored{
 		Wiggle: true,

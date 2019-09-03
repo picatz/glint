@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/golang:1.12
+        environment:
+          GO111MODULE: "on"
+    steps:
+      - checkout
+      - run:
+          command: |
+            go build -o glint
+            ./glint examples/main.go
+workflows:
+  version: 2
+  test_code:
+    jobs:
+      - test

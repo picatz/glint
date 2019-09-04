@@ -171,10 +171,11 @@ Using the `"method"` type you can define certain method calls that should not be
 {
     "type": "method",
     "comment": "don't use http.Handle/http.HandleFunc which uses the DefaultServeMux due to possible side-effects",
-    "cannot_match": [
+    "call_match": [
        "http.Handle$",
        "http.HandleFunc$"
-    ]
+    ],
+    "dont_use": true
 }
 ```
 

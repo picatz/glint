@@ -21,9 +21,12 @@ type MethodRule struct {
 	cannotMatch []*regexp.Regexp
 
 	// int action specific
-	greaterThan int
-	lessThan    int
-	equals      int
+	greaterThan       int
+	lessThan          int
+	equals            int
+	ignoreGreaterThan bool
+	ignoreLessThan    bool
+	ignoreEquals      bool
 }
 
 func (rule *MethodRule) String() string {
@@ -43,9 +46,14 @@ func (rule *MethodRule) LintMessage(fs *token.FileSet, node ast.Node) string {
 }
 
 func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, node ast.Node, ce *ast.CallExpr) {
-	handleBasicLitExpr := func(arg ast.Expr) {
-		bl, ok := arg.(*ast.BasicLit)
-		if ok {
+
+	// digs into the ast node from found function arguments
+	var handleArgument func(ast.Node)
+
+	handleArgument = func(arg ast.Node) {
+		switch a := arg.(type) {
+		case *ast.BasicLit:
+			bl := a
 			switch bl.Kind {
 			case token.STRING:
 				strValue := strings.Replace(bl.Value, "\"", "", -1)
@@ -58,11 +66,42 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 			case token.INT:
 				argInt, err := strconv.Atoi(bl.Value)
 				if err == nil {
-					if argInt > rule.greaterThan || (argInt < rule.lessThan) || (argInt == rule.equals) {
+					// this is trickier than I thought it would be...
+
+					if argInt == rule.equals && !rule.ignoreEquals {
 						fmt.Println(rule.LintMessage(fs, bl))
+						return
+					}
+
+					if argInt < rule.lessThan && !rule.ignoreLessThan {
+						fmt.Println(rule.LintMessage(fs, bl))
+						return
+					}
+
+					if argInt > rule.greaterThan && !rule.ignoreGreaterThan {
+						fmt.Println(rule.LintMessage(fs, bl))
+						return
 					}
 				}
+			default:
+				fmt.Println(a)
 			}
+		case *ast.Ident: // initial hint there's a variable being used
+			switch v := a.Obj.Decl.(type) {
+			case *ast.ValueSpec:
+				handleArgument(v)
+			default:
+				fmt.Println(a)
+			}
+		case *ast.ValueSpec: // handle variables
+			for _, v := range a.Values {
+				handleArgument(v)
+			}
+		case *ast.BinaryExpr:
+			handleArgument(a.X)
+			handleArgument(a.Y)
+		default:
+			fmt.Println(a)
 		}
 	}
 
@@ -73,11 +112,11 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 		}
 		if rule.argument == -1 { // all arguments
 			for _, arg := range ce.Args {
-				handleBasicLitExpr(arg)
+				handleArgument(arg)
 			}
 		} else { // a specific argument
 			arg := ce.Args[rule.argument]
-			handleBasicLitExpr(arg)
+			handleArgument(arg)
 		}
 	} else if matchAny(methodCall, rule.cannotMatch) { // TODO: consider removal because call_match
 		fmt.Println(rule.LintMessage(fs, node))

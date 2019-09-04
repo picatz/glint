@@ -137,6 +137,8 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 						panic("got unexpected greather than type")
 					}
 					v.greaterThan = greaterThanInt
+				} else {
+					v.ignoreGreaterThan = true
 				}
 
 				if r["less_than"] != nil {
@@ -146,6 +148,8 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 						panic("got unexpected greather than type")
 					}
 					v.lessThan = lessThanInt
+				} else {
+					v.ignoreLessThan = true
 				}
 
 				if r["equals"] != nil {
@@ -155,6 +159,8 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 						panic("got unexpected greather than type")
 					}
 					v.equals = equalsInt
+				} else {
+					v.ignoreEquals = true
 				}
 
 				if r["cannot_match"] != nil {

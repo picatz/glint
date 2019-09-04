@@ -118,16 +118,6 @@ Using the `"method"` type you can define certain method calls that should not be
 ```json
 {
    "type": "method",
-   "comment": "use EXACTLY 2048 bits when generating RSA keys for some reason",
-   "call": "rsa.GenerateKey",
-   "argument": 1,
-   "equals": 2048
-}
-```
-
-```json
-{
-   "type": "method",
    "comment": "use 2048 bits or more when generating RSA keys for some reason",
    "call": "rsa.GenerateKey",
    "argument": 1,

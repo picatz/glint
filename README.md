@@ -121,7 +121,7 @@ Using the `"method"` type you can define certain method calls that should not be
    "comment": "use EXACTLY 2048 bits when generating RSA keys for some reason",
    "call": "rsa.GenerateKey",
    "argument": 1,
-    "equals": 2048
+   "equals": 2048
 }
 ```
 

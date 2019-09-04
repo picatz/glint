@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  test:
+  build-from-source:
     docker:
       - image: circleci/golang:1.12
         environment:
@@ -15,4 +15,4 @@ workflows:
   version: 2
   test_code:
     jobs:
-      - test
+      - build-from-source

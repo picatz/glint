@@ -84,14 +84,18 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 					}
 				}
 			default:
-				fmt.Println(a)
+				// fmt.Println(a)
 			}
 		case *ast.Ident: // initial hint there's a variable being used
 			switch v := a.Obj.Decl.(type) {
 			case *ast.ValueSpec:
 				handleArgument(v)
+			case *ast.AssignStmt:
+				for _, r := range v.Rhs {
+					handleArgument(r)
+				}
 			default:
-				fmt.Println(a)
+				// fmt.Println(v)
 			}
 		case *ast.ValueSpec: // handle variables
 			for _, v := range a.Values {
@@ -100,8 +104,12 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 		case *ast.BinaryExpr:
 			handleArgument(a.X)
 			handleArgument(a.Y)
+		case *ast.CallExpr:
+			for _, ar := range a.Args {
+				handleArgument(ar)
+			}
 		default:
-			fmt.Println(a)
+			// fmt.Println(a)
 		}
 	}
 

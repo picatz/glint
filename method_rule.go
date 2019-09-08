@@ -126,7 +126,7 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 			arg := ce.Args[rule.argument]
 			handleArgument(arg)
 		}
-	} else if matchAny(methodCall, rule.cannotMatch) { // TODO: consider removal because call_match
+	} else if matchAny(methodCall, rule.match) { // TODO: consider removal because call_match
 		fmt.Println(rule.LintMessage(fs, node))
 	}
 }

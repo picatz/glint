@@ -16,7 +16,7 @@ type ImportRule struct {
 }
 
 func (rule *ImportRule) String() string {
-	return fmt.Sprintf("import rule: cannot_match:%v must_match:%v", rule.CannotMatch, rule.MustMatch)
+	return fmt.Sprintf("import rule: match:%v", rule.Match)
 }
 
 // Action is required to establish a Rule
@@ -27,15 +27,19 @@ func (rule *ImportRule) Action(fs *token.FileSet, node ast.Node) {
 		importPath := strings.Replace(importSpec.Path.Value, "\"", "", -1)
 
 		if matchAny(importPath, rule.Match) {
-			position := fs.Position(node.Pos())
-			mesg := fmt.Sprintf(
-				"%s:%d:%d:%s",
-				position.Filename,
-				position.Line,
-				position.Column,
-				rule.Comment,
-			)
-			fmt.Println(mesg)
+			rule.LintMessage(fs, node)
 		}
 	}
+}
+
+func (rule *ImportRule) LintMessage(fs *token.FileSet, node ast.Node) string {
+	position := fs.Position(node.Pos())
+
+	return fmt.Sprintf(
+		"%s:%d:%d:%s",
+		position.Filename,
+		position.Line,
+		position.Column,
+		rule.Comment,
+	)
 }

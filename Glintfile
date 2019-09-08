@@ -31,7 +31,7 @@
             "type": "method",
             "comment": "we don't use fmt.Errorf for some silly reaosn",
             "call": "fmt.Errorf",
-            "dont_use": true
+            "avoid": true
         },
         {
             "type": "method",
@@ -48,7 +48,7 @@
             "call_match": [
                 "rand.New$"
             ],
-            "dont_use": true
+            "avoid": true
         },
         {
             "type": "method",

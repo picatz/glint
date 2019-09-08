@@ -225,6 +225,29 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 				}
 
 				u.Rules = append(u.Rules, v)
+			case "comment":
+				v := &CommentRule{}
+
+				if r["comment"] != nil {
+					comment, _ := r["comment"].(string)
+					v.comment = comment
+				}
+
+				if r["match"] != nil {
+					for _, cs := range r["match"].([]interface{}) {
+						str, ok := cs.(string)
+						if !ok {
+							panic("got unexpected cannot match type")
+						}
+						rg, err := regexp.Compile(str)
+						if err != nil {
+							panic(err)
+						}
+						v.Match = append(v.Match, rg)
+					}
+				}
+
+				u.Rules = append(u.Rules, v)
 			}
 		default:
 			fmt.Println(r)

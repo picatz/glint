@@ -303,3 +303,23 @@ ex2 := ExampleServer{}
 // or this this
 ex2 := http.Server{}
 ```
+
+### Comment
+
+Using the `"comment"` type you can declare rules for comments within programs.
+
+#### Available Options for Comment
+
+| Option         | Description                                 | Required  |
+| ---------------|:--------------------------------------------|----------:|
+| `match`        | a list of regular expressions to search for | false     |
+
+```json
+{
+    "type": "comment",
+    "comment": "don't leave TODO comments without a name i.e. TODO(picat):",
+    "match": [
+        "TODO:"
+    ]
+}
+```

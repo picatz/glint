@@ -57,6 +57,7 @@ func main() {
 	for _, arg := range targetCode {
 		if fileExists(arg) {
 			f, err := parser.ParseFile(fs, arg, nil, parser.AllErrors)
+			f, err = parser.ParseFile(fs, arg, nil, parser.ParseComments)
 			if err != nil {
 				log.Printf("could not parse %s: %v", arg, err)
 				continue

@@ -31,7 +31,7 @@
             "type": "method",
             "comment": "we don't use fmt.Errorf for some silly reaosn",
             "call": "fmt.Errorf",
-            "avoid": true
+            "dont_use": true
         },
         {
             "type": "method",
@@ -48,7 +48,7 @@
             "call_match": [
                 "rand.New$"
             ],
-            "avoid": true
+            "dont_use": true
         },
         {
             "type": "method",
@@ -130,6 +130,20 @@
             "match": [
                 "TODO:"
             ]
+        },
+        {
+            "type": "assignment",
+            "comment": "don't skip error checks",
+            "is": [ "error" ],
+            "match": [
+                "_"
+            ]
+        },
+        {
+            "type": "assignment",
+            "comment": "don't skip boolean checks",
+            "is": [ "bool" ],
+            "match": [ "_" ]
         }
     ]
 }

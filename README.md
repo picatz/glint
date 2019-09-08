@@ -117,7 +117,7 @@ Using the `"method"` type you can define certain method calls that should not be
 | `less_than`      | the method argument, if it's an integer, must be less than the given value     | false     |
 | `greater_than`   | the method argument, if it's an integer, must be greater than the given value  | false     |
 | `equals`         | the method argument, if it's an interger, must equal exactly the given value   | false     |
-| `dont_use`       | the method call should not be used if the given faluse is true                 | false     |
+| `avoid`          | the method should be avoided no matter what                                    | false     |
 | `match`          | list of regular expressions to match against method arguments                  | false     |
 
 ```json
@@ -135,7 +135,7 @@ Using the `"method"` type you can define certain method calls that should not be
     "type": "method",
     "comment": "we don't use fmt.Errorf for some reaosn",
     "call": "fmt.Errorf",
-    "dont_use": true
+    "avoid": true
 }
 ```
 
@@ -158,7 +158,7 @@ Using the `"method"` type you can define certain method calls that should not be
     "call_match": [
         "rand.New$"
     ],
-    "dont_use": true
+    "avoid": true
 }
 ```
 
@@ -170,7 +170,7 @@ Using the `"method"` type you can define certain method calls that should not be
        "http.Handle$",
        "http.HandleFunc$"
     ],
-    "dont_use": true
+    "avoid": true
 }
 ```
 
@@ -181,7 +181,7 @@ Using the `"method"` type you can define certain method calls that should not be
     "call_match": [
         "os.Open", "ioutil.ReadFile", "filepath.Join", "path.Join"
     ],
-    "dont_use": true
+    "avoid": true
 }
 ```
 

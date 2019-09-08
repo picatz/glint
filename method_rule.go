@@ -17,8 +17,8 @@ type MethodRule struct {
 	argument  int
 
 	// generic
-	dontUse bool
-	match   []*regexp.Regexp
+	avoid bool
+	match []*regexp.Regexp
 
 	// int action specific
 	greaterThan       int
@@ -114,7 +114,7 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 	}
 
 	if methodCall == rule.call || matchAny(methodCall, rule.callMatch) {
-		if rule.dontUse {
+		if rule.avoid {
 			fmt.Println(rule.LintMessage(fs, node))
 			return
 		}

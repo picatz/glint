@@ -106,9 +106,9 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 					v.comment = comment
 				}
 
-				if r["dont_use"] != nil {
-					dontUse, _ := r["dont_use"].(bool)
-					v.dontUse = dontUse
+				if r["avoid"] != nil {
+					avoid, _ := r["avoid"].(bool)
+					v.avoid = avoid
 				}
 
 				if r["argument"] != nil {

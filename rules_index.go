@@ -67,177 +67,193 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
+	var extractImportRule = func(ruleSpec map[string]interface{}) {
+		v := &ImportRule{}
+
+		if ruleSpec["comment"] != nil {
+			v.Comment = ruleSpec["comment"].(string)
+		}
+
+		if ruleSpec["match"] != nil {
+			for _, cs := range ruleSpec["match"].([]interface{}) {
+				str, ok := cs.(string)
+				if !ok {
+					panic("got unexpected match type")
+				}
+				rg, err := regexp.Compile(str)
+				if err != nil {
+					panic(err)
+				}
+				v.Match = append(v.Match, rg)
+			}
+		}
+
+		u.Rules = append(u.Rules, v)
+	}
+
+	var extractMethodRule = func(ruleSpec map[string]interface{}) {
+		v := &MethodRule{}
+
+		if ruleSpec["call"] != nil {
+			call, _ := ruleSpec["call"].(string)
+			v.call = call
+		}
+
+		if ruleSpec["comment"] != nil {
+			comment, _ := ruleSpec["comment"].(string)
+			v.comment = comment
+		}
+
+		if ruleSpec["avoid"] != nil {
+			avoid, _ := ruleSpec["avoid"].(bool)
+			v.avoid = avoid
+		}
+
+		if ruleSpec["argument"] != nil {
+			argumentStr := fmt.Sprint(ruleSpec["argument"])
+			argumentStrInt, err := strconv.Atoi(argumentStr)
+			if err != nil {
+				panic("got unexpected argument type")
+			}
+			v.argument = argumentStrInt
+		}
+
+		if ruleSpec["greater_than"] != nil {
+			greaterThanStr := fmt.Sprint(ruleSpec["greater_than"])
+			greaterThanInt, err := strconv.Atoi(greaterThanStr)
+			if err != nil {
+				panic("got unexpected greather than type")
+			}
+			v.greaterThan = greaterThanInt
+		} else {
+			v.ignoreGreaterThan = true
+		}
+
+		if ruleSpec["less_than"] != nil {
+			lessThanStr := fmt.Sprint(ruleSpec["less_than"])
+			lessThanInt, err := strconv.Atoi(lessThanStr)
+			if err != nil {
+				panic("got unexpected greather than type")
+			}
+			v.lessThan = lessThanInt
+		} else {
+			v.ignoreLessThan = true
+		}
+
+		if ruleSpec["equals"] != nil {
+			equalsStr := fmt.Sprint(ruleSpec["equals"])
+			equalsInt, err := strconv.Atoi(equalsStr)
+			if err != nil {
+				panic("got unexpected greather than type")
+			}
+			v.equals = equalsInt
+		} else {
+			v.ignoreEquals = true
+		}
+
+		if ruleSpec["match"] != nil {
+			for _, cs := range ruleSpec["match"].([]interface{}) {
+				str, ok := cs.(string)
+				if !ok {
+					panic("got unexpected match type")
+				}
+				rg, err := regexp.Compile(str)
+				if err != nil {
+					panic(err)
+				}
+				v.match = append(v.match, rg)
+			}
+		}
+
+		if ruleSpec["call_match"] != nil {
+			for _, cs := range ruleSpec["call_match"].([]interface{}) {
+				str, ok := cs.(string)
+				if !ok {
+					panic("got unexpected call match type")
+				}
+				rg, err := regexp.Compile(str)
+				if err != nil {
+					panic(err)
+				}
+				v.callMatch = append(v.callMatch, rg)
+			}
+		}
+
+		u.Rules = append(u.Rules, v)
+	}
+
+	var extractStructRule = func(ruleSpec map[string]interface{}) {
+		v := &StructRule{}
+
+		if ruleSpec["comment"] != nil {
+			comment, _ := ruleSpec["comment"].(string)
+			v.comment = comment
+		}
+
+		if ruleSpec["name"] != nil {
+			name, _ := ruleSpec["name"].(string)
+			v.name = name
+		}
+
+		if ruleSpec["field"] != nil {
+			field, _ := ruleSpec["field"].(string)
+			v.field = field
+		}
+
+		if ruleSpec["match"] != nil {
+			for _, cs := range ruleSpec["match"].([]interface{}) {
+				str, ok := cs.(string)
+				if !ok {
+					panic("got unexpected match type")
+				}
+				rg, err := regexp.Compile(str)
+				if err != nil {
+					panic(err)
+				}
+				v.match = append(v.match, rg)
+			}
+		}
+
+		u.Rules = append(u.Rules, v)
+	}
+
+	var extractCommentRule = func(ruleSpec map[string]interface{}) {
+		v := &CommentRule{}
+
+		if ruleSpec["comment"] != nil {
+			comment, _ := ruleSpec["comment"].(string)
+			v.comment = comment
+		}
+
+		if ruleSpec["match"] != nil {
+			for _, cs := range ruleSpec["match"].([]interface{}) {
+				str, ok := cs.(string)
+				if !ok {
+					panic("got unexpected cannot match type")
+				}
+				rg, err := regexp.Compile(str)
+				if err != nil {
+					panic(err)
+				}
+				v.Match = append(v.Match, rg)
+			}
+		}
+
+		u.Rules = append(u.Rules, v)
+	}
+
 	for _, rule := range holder["rules"] {
 		switch r := rule.(type) {
 		case map[string]interface{}:
 			switch r["type"].(string) {
 			case "import":
-				v := &ImportRule{}
-
-				if r["comment"] != nil {
-					v.Comment = r["comment"].(string)
-				}
-
-				if r["match"] != nil {
-					for _, cs := range r["match"].([]interface{}) {
-						str, ok := cs.(string)
-						if !ok {
-							panic("got unexpected match type")
-						}
-						rg, err := regexp.Compile(str)
-						if err != nil {
-							panic(err)
-						}
-						v.Match = append(v.Match, rg)
-					}
-				}
-
-				u.Rules = append(u.Rules, v)
+				extractImportRule(r)
 			case "method":
-				v := &MethodRule{}
-
-				if r["call"] != nil {
-					call, _ := r["call"].(string)
-					v.call = call
-				}
-
-				if r["comment"] != nil {
-					comment, _ := r["comment"].(string)
-					v.comment = comment
-				}
-
-				if r["avoid"] != nil {
-					avoid, _ := r["avoid"].(bool)
-					v.avoid = avoid
-				}
-
-				if r["argument"] != nil {
-					argumentStr := fmt.Sprint(r["argument"])
-					argumentStrInt, err := strconv.Atoi(argumentStr)
-					if err != nil {
-						panic("got unexpected argument type")
-					}
-					v.argument = argumentStrInt
-				}
-
-				if r["greater_than"] != nil {
-					greaterThanStr := fmt.Sprint(r["greater_than"])
-					greaterThanInt, err := strconv.Atoi(greaterThanStr)
-					if err != nil {
-						panic("got unexpected greather than type")
-					}
-					v.greaterThan = greaterThanInt
-				} else {
-					v.ignoreGreaterThan = true
-				}
-
-				if r["less_than"] != nil {
-					lessThanStr := fmt.Sprint(r["less_than"])
-					lessThanInt, err := strconv.Atoi(lessThanStr)
-					if err != nil {
-						panic("got unexpected greather than type")
-					}
-					v.lessThan = lessThanInt
-				} else {
-					v.ignoreLessThan = true
-				}
-
-				if r["equals"] != nil {
-					equalsStr := fmt.Sprint(r["equals"])
-					equalsInt, err := strconv.Atoi(equalsStr)
-					if err != nil {
-						panic("got unexpected greather than type")
-					}
-					v.equals = equalsInt
-				} else {
-					v.ignoreEquals = true
-				}
-
-				if r["match"] != nil {
-					for _, cs := range r["match"].([]interface{}) {
-						str, ok := cs.(string)
-						if !ok {
-							panic("got unexpected match type")
-						}
-						rg, err := regexp.Compile(str)
-						if err != nil {
-							panic(err)
-						}
-						v.match = append(v.match, rg)
-					}
-				}
-
-				if r["call_match"] != nil {
-					for _, cs := range r["call_match"].([]interface{}) {
-						str, ok := cs.(string)
-						if !ok {
-							panic("got unexpected call match type")
-						}
-						rg, err := regexp.Compile(str)
-						if err != nil {
-							panic(err)
-						}
-						v.callMatch = append(v.callMatch, rg)
-					}
-				}
-
-				u.Rules = append(u.Rules, v)
+				extractMethodRule(r)
 			case "struct":
-				v := &StructRule{}
-
-				if r["comment"] != nil {
-					comment, _ := r["comment"].(string)
-					v.comment = comment
-				}
-
-				if r["name"] != nil {
-					name, _ := r["name"].(string)
-					v.name = name
-				}
-
-				if r["field"] != nil {
-					field, _ := r["field"].(string)
-					v.field = field
-				}
-
-				if r["match"] != nil {
-					for _, cs := range r["match"].([]interface{}) {
-						str, ok := cs.(string)
-						if !ok {
-							panic("got unexpected match type")
-						}
-						rg, err := regexp.Compile(str)
-						if err != nil {
-							panic(err)
-						}
-						v.match = append(v.match, rg)
-					}
-				}
-
-				u.Rules = append(u.Rules, v)
+				extractStructRule(r)
 			case "comment":
-				v := &CommentRule{}
-
-				if r["comment"] != nil {
-					comment, _ := r["comment"].(string)
-					v.comment = comment
-				}
-
-				if r["match"] != nil {
-					for _, cs := range r["match"].([]interface{}) {
-						str, ok := cs.(string)
-						if !ok {
-							panic("got unexpected cannot match type")
-						}
-						rg, err := regexp.Compile(str)
-						if err != nil {
-							panic(err)
-						}
-						v.Match = append(v.Match, rg)
-					}
-				}
-
-				u.Rules = append(u.Rules, v)
+				extractCommentRule(r)
 			}
 		default:
 			fmt.Println(r)

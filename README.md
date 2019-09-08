@@ -328,3 +328,60 @@ Using the `"comment"` type you can declare rules for comments within programs.
     ]
 }
 ```
+
+### Assignment
+
+Using the `"assginment"` type you can declare rules for variable assignments within programs.
+
+#### Available Options for Assignment
+
+| Option         | Description                                                       | Required  |
+| ---------------|:------------------------------------------------------------------|----------:|
+| `is`           | a list of regular expressions match against the variable types    | false     |
+| `match`        | a list of regular expressions match against the variable names    | false     |
+
+```json
+{
+    "type": "assignment",
+    "comment": "don't skip error checks",
+    "is": [ "error" ],
+    "match": [ "_" ]
+}
+```
+
+```json
+{
+    "type": "assignment",
+    "comment": "don't skip boolean checks",
+    "is": [ "bool" ],
+    "match": [ "_" ]
+}
+```
+
+Which will catch things like:
+
+```golang
+package main
+
+import (
+	"errors"
+)
+
+func okOrErr() (bool, error) {
+	return false, errors.New("example")
+}
+
+func main() {
+    ok, _ = okOrErr()
+    if ok {
+        return
+    }
+}
+```
+
+Producing the following error:
+
+```console
+$ glint -rules="/path/to/Glintfile" /path/to/main.go
+/path/to/main.go:12:6:don't skip error checks
+```

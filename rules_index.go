@@ -242,6 +242,45 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 		u.Rules = append(u.Rules, v)
 	}
 
+	var extractAssignmentRule = func(ruleSpec map[string]interface{}) {
+		v := &AssignmentRule{}
+
+		if ruleSpec["comment"] != nil {
+			comment, _ := ruleSpec["comment"].(string)
+			v.comment = comment
+		}
+
+		if ruleSpec["match"] != nil {
+			for _, cs := range ruleSpec["match"].([]interface{}) {
+				str, ok := cs.(string)
+				if !ok {
+					panic("got unexpected match type")
+				}
+				rg, err := regexp.Compile(str)
+				if err != nil {
+					panic(err)
+				}
+				v.match = append(v.match, rg)
+			}
+		}
+
+		if ruleSpec["is"] != nil {
+			for _, cs := range ruleSpec["is"].([]interface{}) {
+				str, ok := cs.(string)
+				if !ok {
+					panic("got unexpected is type")
+				}
+				rg, err := regexp.Compile(str)
+				if err != nil {
+					panic(err)
+				}
+				v.is = append(v.is, rg)
+			}
+		}
+
+		u.Rules = append(u.Rules, v)
+	}
+
 	for _, rule := range holder["rules"] {
 		switch r := rule.(type) {
 		case map[string]interface{}:
@@ -254,6 +293,8 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 				extractStructRule(r)
 			case "comment":
 				extractCommentRule(r)
+			case "assignment":
+				extractAssignmentRule(r)
 			}
 		default:
 			fmt.Println(r)

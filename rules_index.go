@@ -73,35 +73,25 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 			switch r["type"].(string) {
 			case "import":
 				v := &ImportRule{}
-				if r["cannot_match"] != nil {
-					for _, cs := range r["cannot_match"].([]interface{}) {
-						str, ok := cs.(string)
-						if !ok {
-							panic("got unexpected cannot match type")
-						}
-						rg, err := regexp.Compile(str)
-						if err != nil {
-							panic(err)
-						}
-						v.CannotMatch = append(v.CannotMatch, rg)
-					}
-				}
-				if r["must_match"] != nil {
-					for _, ms := range r["must_match"].([]interface{}) {
-						str, ok := ms.(string)
-						if !ok {
-							panic("got unexpected must match type")
-						}
-						rg, err := regexp.Compile(str)
-						if err != nil {
-							panic(err)
-						}
-						v.MustMatch = append(v.MustMatch, rg)
-					}
-				}
+
 				if r["comment"] != nil {
 					v.Comment = r["comment"].(string)
 				}
+
+				if r["match"] != nil {
+					for _, cs := range r["match"].([]interface{}) {
+						str, ok := cs.(string)
+						if !ok {
+							panic("got unexpected match type")
+						}
+						rg, err := regexp.Compile(str)
+						if err != nil {
+							panic(err)
+						}
+						v.Match = append(v.Match, rg)
+					}
+				}
+
 				u.Rules = append(u.Rules, v)
 			case "method":
 				v := &MethodRule{}
@@ -163,17 +153,17 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 					v.ignoreEquals = true
 				}
 
-				if r["cannot_match"] != nil {
-					for _, cs := range r["cannot_match"].([]interface{}) {
+				if r["match"] != nil {
+					for _, cs := range r["match"].([]interface{}) {
 						str, ok := cs.(string)
 						if !ok {
-							panic("got unexpected cannot match type")
+							panic("got unexpected match type")
 						}
 						rg, err := regexp.Compile(str)
 						if err != nil {
 							panic(err)
 						}
-						v.cannotMatch = append(v.cannotMatch, rg)
+						v.match = append(v.match, rg)
 					}
 				}
 
@@ -181,7 +171,7 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 					for _, cs := range r["call_match"].([]interface{}) {
 						str, ok := cs.(string)
 						if !ok {
-							panic("got unexpected cannot match type")
+							panic("got unexpected call match type")
 						}
 						rg, err := regexp.Compile(str)
 						if err != nil {
@@ -210,17 +200,17 @@ func (u *RulesIndex) UnmarshalJSON(b []byte) error {
 					v.field = field
 				}
 
-				if r["cannot_match"] != nil {
-					for _, cs := range r["cannot_match"].([]interface{}) {
+				if r["match"] != nil {
+					for _, cs := range r["match"].([]interface{}) {
 						str, ok := cs.(string)
 						if !ok {
-							panic("got unexpected cannot match type")
+							panic("got unexpected match type")
 						}
 						rg, err := regexp.Compile(str)
 						if err != nil {
 							panic(err)
 						}
-						v.cannotMatch = append(v.cannotMatch, rg)
+						v.match = append(v.match, rg)
 					}
 				}
 

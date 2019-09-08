@@ -13,7 +13,7 @@ type StructRule struct {
 	field   string
 
 	// inspecting selectors, strings
-	cannotMatch []*regexp.Regexp
+	match []*regexp.Regexp
 }
 
 func (rule *StructRule) String() string {
@@ -58,7 +58,7 @@ func (rule *StructRule) Action(fs *token.FileSet, node ast.Node) {
 		// handle stringified struct value assingment, the final check in the
 		// ast parsing strategy for this rule type
 		var handleStrValue = func(v string, snode ast.Node) {
-			if matchAny(v, rule.cannotMatch) {
+			if matchAny(v, rule.match) {
 				fmt.Println(rule.LintMessage(fs, snode))
 			}
 		}

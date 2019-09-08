@@ -10,18 +10,15 @@
         {
             "type": "import",
             "comment": "we don't use golang.org/x/* packages",
-            "cannot_match": [
+            "match": [
                 "golang.org/x/\\w+"
-            ],
-            "must_match": [
-                "\\w+"
             ]
         },
         # Example comment again.
         {
             "type": "import",
             "comment": "we don't rely on these packages for almost anything",
-            "cannot_match": [
+            "match": [
                 "crypto/md5",
                 "crypto/des",
                 "crypto/rc4",

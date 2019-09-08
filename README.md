@@ -91,14 +91,13 @@ Using the `"import"` type you can specify what imported packages should or shoul
 
 | Option        | Description                                                              | Required  |
 | ------------- |:-------------------------------------------------------------------------|----------:|
-| `cannot_match`| array of regular expressions for packages the program **should not** use | false     |
-| `must_match`  | array of regular expressions the packages program **should** use         | false     |
+| `match`       | list of regular expressions to use to search imports                     | false     |
 
 ```json
 {
     "type": "import",
     "comment": "don't use golang.org/x/* packages",
-    "cannot_match": [
+    "match": [
         "golang.org/x/\\w+"
     ]
 }
@@ -119,7 +118,7 @@ Using the `"method"` type you can define certain method calls that should not be
 | `greater_than`   | the method argument, if it's an integer, must be greater than the given value  | false     |
 | `equals`         | the method argument, if it's an interger, must equal exactly the given value   | false     |
 | `dont_use`       | the method call should not be used if the given faluse is true                 | false     |
-| `cannot_match`   | array of regular expressions that method arguments *should not** use           | false     |
+| `match`          | list of regular expressions to match against method arguments                  | false     |
 
 ```json
 {
@@ -146,7 +145,7 @@ Using the `"method"` type you can define certain method calls that should not be
     "comment": "don't use uppercase error message string in fmt.Errorf formatted errors for some reason",
     "call": "fmt.Errorf",
     "argument": 0,
-    "cannot_match": [
+    "match": [
         "^[A-Z]+"
     ]
 }
@@ -204,11 +203,11 @@ Using the `"struct"` type you can declare rules for structs.
 
 #### Available Options for Struct
 
-| Option         | Description                                 | Required  |
-| ---------------|:--------------------------------------------|----------:|
-| `name`         | the name of the package struct to inspect   | false     |
-| `field`        | the specific struct field to inspect        | false     |
-| `cannot_match` | field values that **should not** be used    | false     |
+| Option         | Description                                        | Required  |
+| ---------------|:---------------------------------------------------|----------:|
+| `name`         | the name of the package struct to inspect          | false     |
+| `field`        | the specific struct field to inspect               | false     |
+| `match`        | list of regular expressions to match field values  | false     |
 
 > **Note**: For the `field` option, if there are no fields defined when creating the struct in the inspected source code, then the assumed value to check against is `nil` for any type. This isn't the "zero value" you might expect, but greatly simplifies the config for checking structs.
 
@@ -218,7 +217,7 @@ Using the `"struct"` type you can declare rules for structs.
     "comment": "don't use TLS 1.3 ciphers in a tls.Config",
     "name": "tls.Config",
     "field": "CipherSuites",
-    "cannot_match": [
+    "match": [
         "tls.TLS_AES_128_GCM_SHA256",
         "tls.TLS_AES_256_GCM_SHA384",
         "tls.TLS_CHACHA20_POLY1305_SHA256"
@@ -232,7 +231,7 @@ Using the `"struct"` type you can declare rules for structs.
     "comment": "always set ReadTimeout when creating an http.Server",
     "name": "http.Server",
     "field": "ReadTimeout",
-    "cannot_match": [
+    "match": [
         "0", "nil"
     ]
 }
@@ -244,7 +243,7 @@ Using the `"struct"` type you can declare rules for structs.
     "comment": "http.Server ReadTimeout field should never be a single second",
     "name": "http.Server",
     "field": "ReadTimeout",
-    "cannot_match": [
+    "match": [
         "time.Second"
     ]
 }
@@ -256,7 +255,7 @@ Using the `"struct"` type you can declare rules for structs.
     "comment": "always set ReadTimeout when creating an ExampleServer",
     "name": "ExampleServer",
     "field": "ReadTimeout",
-    "cannot_match": [
+    "match": [
         "0", "nil"
     ]
 }
@@ -284,13 +283,13 @@ var example2 = ExampleServer{}
     "type": "struct",
     "comment": "for most structs, ReadTimeout should almost never be 0",
     "field": "ReadTimeout",
-    "cannot_match": [
+    "match": [
         "0"
     ]
 }
 ```
 
-> **Note**: The example above is meant to demonstrate that struct fields of any go struct type can be checked if the `name` option is ommitted. However, if the struct is created using the implicit zero value (field is not used during initialization), then this check will not apply to it unless it cannot match `nil` as well which could accidently be applied to any struct that has ignored fields and should generally be avoided.
+> **Note**: The example above is meant to demonstrate that struct fields of any go struct type can be checked if the `name` option is ommitted. However, if the struct is created using the implicit zero value (field is not used during initialization), then this check will not apply to it unless the rules matches `nil` as well which could accidently be applied to any struct that has ignored fields and should generally be avoided.
 
 ```go
 // it would be able to check this

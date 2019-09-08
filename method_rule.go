@@ -17,8 +17,8 @@ type MethodRule struct {
 	argument  int
 
 	// generic
-	dontUse     bool
-	cannotMatch []*regexp.Regexp
+	dontUse bool
+	match   []*regexp.Regexp
 
 	// int action specific
 	greaterThan       int
@@ -57,7 +57,7 @@ func (rule *MethodRule) ProcessMethodCall(methodCall string, fs *token.FileSet, 
 			switch bl.Kind {
 			case token.STRING:
 				strValue := strings.Replace(bl.Value, "\"", "", -1)
-				for _, cm := range rule.cannotMatch {
+				for _, cm := range rule.match {
 					match := cm.FindString(strValue)
 					if match != "" {
 						fmt.Println(rule.LintMessage(fs, bl))

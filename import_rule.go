@@ -12,8 +12,7 @@ import (
 type ImportRule struct {
 	Comment string
 
-	CannotMatch []*regexp.Regexp
-	MustMatch   []*regexp.Regexp
+	Match []*regexp.Regexp
 }
 
 func (rule *ImportRule) String() string {
@@ -27,34 +26,16 @@ func (rule *ImportRule) Action(fs *token.FileSet, node ast.Node) {
 	if ok {
 		importPath := strings.Replace(importSpec.Path.Value, "\"", "", -1)
 
-		for _, re := range rule.CannotMatch {
-			match := re.FindString(importPath)
-			if match != "" {
-				position := fs.Position(node.Pos())
-				mesg := fmt.Sprintf(
-					"%s:%d:%d:%s",
-					position.Filename,
-					position.Line,
-					position.Column,
-					rule.Comment,
-				)
-				fmt.Println(mesg)
-			}
-		}
-
-		for _, re := range rule.MustMatch {
-			match := re.FindString(importPath)
-			if match == "" {
-				position := fs.Position(node.Pos())
-				mesg := fmt.Sprintf(
-					"%s:%d:%d:%s",
-					position.Filename,
-					position.Line,
-					position.Column,
-					rule.Comment,
-				)
-				fmt.Println(mesg)
-			}
+		if matchAny(importPath, rule.Match) {
+			position := fs.Position(node.Pos())
+			mesg := fmt.Sprintf(
+				"%s:%d:%d:%s",
+				position.Filename,
+				position.Line,
+				position.Column,
+				rule.Comment,
+			)
+			fmt.Println(mesg)
 		}
 	}
 }

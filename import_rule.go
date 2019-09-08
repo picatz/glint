@@ -27,7 +27,7 @@ func (rule *ImportRule) Action(fs *token.FileSet, node ast.Node) {
 		importPath := strings.Replace(importSpec.Path.Value, "\"", "", -1)
 
 		if matchAny(importPath, rule.Match) {
-			rule.LintMessage(fs, node)
+			fmt.Println(rule.LintMessage(fs, node))
 		}
 	}
 }

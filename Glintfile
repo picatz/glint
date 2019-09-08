@@ -4,6 +4,7 @@
 // This comment style type is also supported.
 
 {
+    "version": "1.0",
     "rules": [
         # // Example comment.
         {
@@ -125,6 +126,13 @@
             "call": "rsa.GenerateKey",
             "argument": 1,
             "less_than": 2048
-         }
+        },
+        {
+            "type": "comment",
+            "comment": "don't leave TODO comments with a name",
+            "match": [
+                "TODO:"
+            ]
+        }
     ]
 }

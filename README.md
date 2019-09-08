@@ -1,6 +1,12 @@
 # glint
 
-> ⚠️ Under development, but PRs are welcome!
+> ⚠️ Under development!
+
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/picatz/glint/blob/master/LICENSE)
+[![CircleCI Status](https://circleci.com/gh/picatz/glint.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/picatz/glint)
+[![go report](https://goreportcard.com/badge/github.com/picatz/glint)](https://github.com/picatz/glint/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/picatz/glint/pulls)
+
 
 ## Install
 
